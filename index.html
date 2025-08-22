@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pencari Modul UT</title>
+    <!-- Tailwind CSS CDN untuk styling yang cepat dan responsif -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Menggunakan font Inter untuk tampilan modern */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800 p-4 min-h-screen flex items-center justify-center">
+
+    <div class="w-full max-w-2xl bg-white rounded-xl shadow-lg p-6 md:p-10 border border-gray-200">
+        <!-- Header Aplikasi -->
+        <header class="text-center mb-8">
+            <h1 class="text-3xl md:text-4xl font-extrabold text-blue-600 mb-2">Pencari Modul UT</h1>
+            <p class="text-gray-500 text-sm md:text-base">
+                Temukan dan unduh modul buku Universitas Terbuka dengan mudah.
+            </p>
+        </header>
+
+        <!-- Form Pencarian -->
+        <div class="mb-6">
+            <label for="search-input" class="sr-only">Cari Modul</label>
+            <div class="flex flex-col md:flex-row gap-2">
+                <input
+                    type="text"
+                    id="search-input"
+                    placeholder="Masukkan nomor buku atau nama buku..."
+                    class="flex-grow p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200"
+                />
+                <button
+                    id="search-button"
+                    class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200"
+                >
+                    Cari
+                </button>
+            </div>
+        </div>
+
+        <!-- Area Hasil Pencarian -->
+        <div id="results-container" class="space-y-4">
+            <!-- Hasil akan ditampilkan di sini oleh JavaScript -->
+            <p class="text-center text-gray-400 mt-10">
+                Silakan masukkan kata kunci untuk memulai pencarian.
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Data dummy untuk demonstrasi.
+        // Dalam aplikasi nyata, data ini akan diambil dari server atau database.
+        const modules = [
+            { bookNumber: 'MKDU4110', bookName: 'Bahasa Inggris I', downloadUrl: 'https://placehold.co/600x400/0000FF/FFFFFF?text=Modul-MKDU4110.pdf' },
+            { bookNumber: 'EKMA4111', bookName: 'Pengantar Bisnis', downloadUrl: 'https://placehold.co/600x400/FF0000/FFFFFF?text=Modul-EKMA4111.pdf' },
+            { bookNumber: 'ISIP4112', bookName: 'Pengantar Ilmu Ekonomi', downloadUrl: 'https://placehold.co/600x400/00FF00/FFFFFF?text=Modul-ISIP4112.pdf' },
+            { bookNumber: 'ADBI4210', bookName: 'Pemasaran Jasa', downloadUrl: 'https://placehold.co/600x400/FFC0CB/000000?text=Modul-ADBI4210.pdf' },
+            { bookNumber: 'MNRT4402', bookName: 'Matematika Terapan', downloadUrl: 'https://placehold.co/600x400/800080/FFFFFF?text=Modul-MNRT4402.pdf' },
+            { bookNumber: 'SKOM4204', bookName: 'Perilaku Konsumen', downloadUrl: 'https://placehold.co/600x400/FFFF00/000000?text=Modul-SKOM4204.pdf' },
+            { bookNumber: 'IPEM4319', bookName: 'Sistem Pemerintahan', downloadUrl: 'https://placehold.co/600x400/FFA500/000000?text=Modul-IPEM4319.pdf' },
+            { bookNumber: 'PAJA4234', bookName: 'Pajak Daerah', downloadUrl: 'https://placehold.co/600x400/808080/FFFFFF?text=Modul-PAJA4234.pdf' },
+        ];
+
+        // Mendapatkan elemen-elemen DOM
+        const searchInput = document.getElementById('search-input');
+        const searchButton = document.getElementById('search-button');
+        const resultsContainer = document.getElementById('results-container');
+
+        // Fungsi untuk merender hasil pencarian
+        function renderResults(filteredModules) {
+            // Menghapus hasil sebelumnya
+            resultsContainer.innerHTML = '';
+
+            // Jika tidak ada hasil, tampilkan pesan
+            if (filteredModules.length === 0) {
+                resultsContainer.innerHTML = `
+                    <p class="text-center text-gray-400 mt-10">
+                        Tidak ada modul yang cocok dengan pencarian Anda.
+                    </p>
+                `;
+                return;
+            }
+
+            // Membangun dan menampilkan setiap hasil
+            filteredModules.forEach(module => {
+                const moduleCard = document.createElement('div');
+                moduleCard.className = 'bg-white border border-gray-200 rounded-lg p-4 md:p-6 shadow-sm flex flex-col md:flex-row items-center justify-between transition-transform duration-200 hover:scale-[1.01]';
+                moduleCard.innerHTML = `
+                    <div class="mb-4 md:mb-0 md:mr-6 text-center md:text-left">
+                        <p class="text-sm font-semibold text-gray-500 mb-1">Nomor Buku</p>
+                        <h3 class="text-lg md:text-xl font-bold text-blue-600">${module.bookNumber}</h3>
+                    </div>
+                    <div class="flex-grow text-center md:text-left mb-4 md:mb-0">
+                        <p class="text-sm font-semibold text-gray-500 mb-1">Nama Buku</p>
+                        <h4 class="text-md md:text-lg font-semibold text-gray-700">${module.bookName}</h4>
+                    </div>
+                    <a href="${module.downloadUrl}" download="${module.bookNumber}-${module.bookName}.pdf" class="w-full md:w-auto bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg text-center shadow-md transition-colors duration-200">
+                        Unduh
+                    </a>
+                `;
+                resultsContainer.appendChild(moduleCard);
+            });
+        }
+
+        // Fungsi utama untuk menangani pencarian
+        function handleSearch() {
+            const query = searchInput.value.toLowerCase().trim();
+
+            if (query === '') {
+                // Tampilkan semua modul jika input kosong
+                renderResults(modules);
+                return;
+            }
+
+            // Memfilter modul berdasarkan nomor buku atau nama buku
+            const filteredModules = modules.filter(module =>
+                module.bookNumber.toLowerCase().includes(query) ||
+                module.bookName.toLowerCase().includes(query)
+            );
+
+            renderResults(filteredModules);
+        }
+
+        // Menambahkan event listener ke tombol pencarian
+        searchButton.addEventListener('click', handleSearch);
+
+        // Menambahkan event listener untuk tombol Enter pada input
+        searchInput.addEventListener('keyup', function(event) {
+            if (event.key === 'Enter') {
+                handleSearch();
+            }
+        });
+
+        // Menampilkan semua modul saat halaman pertama kali dimuat
+        document.addEventListener('DOMContentLoaded', () => {
+            renderResults(modules);
+        });
+
+    </script>
+
+</body>
+</html>
