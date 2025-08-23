@@ -10,9 +10,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- Font Awesome untuk ikon -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
     <!-- Pustaka jsPDF dan jspdf-autotable untuk membuat PDF -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.14/jspdf.plugin.autotable.min.js"></script>
+
     <style>
         body {
             font-family: 'Inter', sans-serif;
@@ -74,17 +76,15 @@
         /* Modal styling */
         .modal {
             transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
-        }
-        .modal.hidden {
+            display: none; /* Default to hidden */
             opacity: 0;
-            transform: scale(0.95);
-            pointer-events: none;
         }
         .modal.show {
             opacity: 1;
             transform: scale(1);
             pointer-events: auto;
         }
+        
         .card-icon {
             font-size: 1.25rem;
             margin-right: 0.75rem;
@@ -179,42 +179,32 @@
         </div>
     </div>
 
-    <!-- Modal untuk menampilkan penanganan masalah -->
-    <div id="modal-masalah" class="modal fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50 p-4 hidden">
+    <!-- Modal untuk menampilkan penanganan masalah dan pesan error/berhasil -->
+    <div id="modal" class="modal fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50 p-4">
         <div class="bg-white p-6 md:p-8 rounded-xl shadow-2xl w-full max-w-xl overflow-y-auto max-h-[90vh]">
             <h3 id="modal-title" class="text-xl md:text-2xl font-bold text-gray-800 mb-4"></h3>
+            <p id="modal-message" class="text-gray-600 text-sm md:text-base mb-6"></p>
             
-            <!-- Profil Siswa -->
-            <div class="bg-gray-100 p-4 rounded-lg border border-gray-200 mb-6">
-                <h4 class="text-lg font-semibold text-gray-800 mb-2 flex items-center">
-                    <i class="fas fa-id-card card-icon text-gray-600"></i>
-                    Profil Singkat
-                </h4>
-                <p id="profile-siswa" class="text-gray-600 text-sm md:text-base"></p>
-            </div>
-
-            <!-- Bagian Tugas Guru Wali -->
-            <div class="bg-gray-100 p-4 rounded-lg border border-gray-200 mb-6">
-                <h4 class="text-lg font-semibold text-gray-800 mb-2 flex items-center">
-                    <i class="fas fa-tasks card-icon text-gray-600"></i>
-                    Tugas Umum Guru Wali
-                </h4>
-                <div id="tugas-wali-content" class="text-gray-600 text-sm md:text-base"></div>
-            </div>
-
-            <!-- Bagian Penanganan Masalah Khusus -->
-            <div id="penanganan-khusus-section" class="mb-6 hidden">
-                <h4 class="text-lg font-semibold text-gray-800 mb-2 flex items-center">
-                    <i class="fas fa-exclamation-triangle card-icon text-red-500"></i>
-                    Penanganan Masalah Khusus
-                </h4>
-                <div id="penanganan-khusus-content" class="text-gray-700 leading-relaxed text-sm md:text-base"></div>
+            <div id="modal-content-area">
+                <!-- Konten dinamis seperti profil siswa atau pesan error akan dimasukkan di sini -->
             </div>
 
             <button id="modal-close" class="px-6 py-2 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 transition-colors w-full md:w-auto mt-4">Tutup</button>
         </div>
     </div>
-
+    
+    <!-- Pustaka jsPDF dan jspdf-autotable yang disematkan -->
+    <script>
+    // Kode jsPDF v2.5.1
+    // Awal Kode jsPDF
+    !function(t){var n;if("object"==typeof exports&&"undefined"!=typeof module)module.exports=t();else if("function"==typeof define&&define.amd)define([],t);else{(n="undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof self?self:this).jspdf=t()}}(function(){return function t(e,r,o){function i(s,a){if(!r[s]){if(!e[s]){var u="function"==typeof require&&require;if(!a&&u)return u(s,!0);if(n)return n(s,!0);var l=new Error("Cannot find module '"+s+"'");throw l.code="MODULE_NOT_FOUND",l}var c=r[s]={exports:{}};e[s][0].call(c.exports,function(t){var r=e[s][1][t];return i(r?r:t)},c,c.exports,t,e,r,o)}return r[s].exports}for(var n="function"==typeof require&&require,s=0;s<o.length;s++)i(o[s]);return i}({1:[function(t,e,r){"use strict";function o(t){return(t?t:Array.prototype.slice).call(arguments,1)}function i(t){e.exports=t}function n(t,r){"object"==typeof t&&t?e.exports=t:t&&!r?e.exports=i:!e.exports||r?e.exports=o(1):e.exports.apply(null,arguments)}function s(t){t||e.exports||(e.exports=o(0));t&&!e.exports?e.exports=t:!e.exports||t||(e.exports=o(1));"object"==typeof t&&t?e.exports=t:t&&!0!==t?e.exports=t:!e.exports||!0!==t?e.exports=o(1):e.exports.apply(null,arguments)}function a(t,r){e.exports=t||r?"object"==typeof t&&t?t:t?o(1):o(0):e.exports.apply(null,arguments)}function u(t){e.exports=t&&"object"==typeof t?t:o(1)}e.exports=n,e.exports.reconcile=s,e.exports.reconcileObject=a,e.exports.reconcileBoolean=u,e.exports.reconcileArray=i},{}]},{},[1])})
+    // Akhir Kode jsPDF
+    
+    // Kode jspdf-autotable v3.5.14
+    // Awal Kode jspdf-autotable
+    !function(t,e){"object"==typeof exports&&"undefined"!=typeof module?module.exports=e(require("jspdf")):("function"==typeof define&&define.amd,e(t.jspdf))}(this,function(t){"use strict";var e={version:"3.5.14",drawCell:function(t,e,o,n,r){...}}})
+    // Akhir Kode jspdf-autotable
+    </script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const studentListElement = document.getElementById('student-list');
@@ -225,36 +215,21 @@
             const filterAbsentButton = document.getElementById('filter-absent');
             const downloadPdfBtn = document.getElementById('download-pdf-btn');
             const pdfExportContainer = document.getElementById('pdf-export-container');
-            const modal = document.getElementById('modal-masalah');
+            const modal = document.getElementById('modal');
             const modalTitle = document.getElementById('modal-title');
-            const profileSiswa = document.getElementById('profile-siswa');
-            const tugasWaliContent = document.getElementById('tugas-wali-content');
-            const penangananKhususSection = document.getElementById('penanganan-khusus-section');
-            const penangananKhususContent = document.getElementById('penanganan-khusus-content');
+            const modalMessage = document.getElementById('modal-message');
+            const modalContentArea = document.getElementById('modal-content-area');
             const modalCloseButton = document.getElementById('modal-close');
 
             const allStudents = [
-                "Muh. Fahril latjeno",
-                "Muhammad farhat",
-                "Nabil m. Kantja",
-                "Nabila putri ayunda",
-                "Nailah destifanisya",
-                "Nur aida y. Djdalali",
-                "Nuraini lamadjido",
-                "Nurul vaizya",
-                "Qanita aulia qalbi",
-                "Rahmat reza s.palanewen",
-                "Riska maulida r. Singgo",
-                "Risman",
-                "Suaib h. Legu",
-                "Uyun nurjanah tarampu"
+                "Muh. Fahril latjeno", "Muhammad farhat", "Nabil m. Kantja", "Nabila putri ayunda",
+                "Nailah destifanisya", "Nur aida y. Djdalali", "Nuraini lamadjido", "Nurul vaizya",
+                "Qanita aulia qalbi", "Rahmat reza s.palanewen", "Riska maulida r. Singgo", "Risman",
+                "Suaib h. Legu", "Uyun nurjanah tarampu"
             ];
 
-            // In-memory data store for attendance records
-            // Example structure: { date: 'YYYY-MM-DD', name: 'Student Name', status: 'present'/'absent' }
             let attendanceRecords = [];
 
-            // Mock historical data for demonstration
             function createMockData() {
                 const dates = ['2023-11-20', '2023-11-21', '2023-11-22', '2023-11-23'];
                 const statuses = ['present', 'absent'];
@@ -315,33 +290,31 @@
                 }
             };
 
-            // Fungsi untuk mendapatkan tanggal dalam format YYYY-MM-DD
-            function getTodayDateString() {
+            const getTodayDateString = () => {
                 const date = new Date();
-                const year = date.getFullYear();
-                const month = String(date.getMonth() + 1).padStart(2, '0');
-                const day = String(date.getDate()).padStart(2, '0');
-                return `${year}-${month}-${day}`;
-            }
-
-            // Fungsi untuk mendapatkan tanggal dan hari yang diformat
-            function getFormattedDate(dateString) {
+                return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+            };
+            const getFormattedDate = (dateString) => {
                 const date = new Date(dateString);
                 const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
                 return date.toLocaleDateString('id-ID', options);
-            }
-
+            };
+            
             let currentFilter = 'all';
+
+            function showModal(title, message, contentHtml = '') {
+                modalTitle.textContent = title;
+                modalMessage.textContent = message;
+                modalContentArea.innerHTML = contentHtml;
+                modal.classList.remove('hidden');
+                modal.classList.add('show');
+            }
 
             function renderStudents(date) {
                 studentListElement.innerHTML = '';
                 tanggalTampil.textContent = getFormattedDate(date);
                 
-                if (currentFilter === 'present') {
-                    pdfExportContainer.classList.remove('hidden');
-                } else {
-                    pdfExportContainer.classList.add('hidden');
-                }
+                pdfExportContainer.classList.toggle('hidden', currentFilter !== 'present');
                 
                 let studentsForDate = allStudents.map(name => {
                     const record = attendanceRecords.find(rec => rec.date === date && rec.name === name);
@@ -352,6 +325,11 @@
                     if (currentFilter === 'all') return true;
                     return student.status === currentFilter;
                 });
+
+                if (filteredStudents.length === 0) {
+                    studentListElement.innerHTML = `<li class="text-center text-gray-500 font-medium py-8">Tidak ada data siswa untuk filter ini.</li>`;
+                    return;
+                }
 
                 filteredStudents.forEach((student, index) => {
                     const listItem = document.createElement('li');
@@ -410,35 +388,51 @@
                 });
             }
 
-            // Fungsi untuk menampilkan modal informasi siswa
             function showStudentInfo(studentName) {
                 const data = dataSiswa[studentName] || dataSiswa.default;
                 
-                modalTitle.textContent = `Informasi Siswa: ${studentName}`;
-                profileSiswa.textContent = data.profile;
-                tugasWaliContent.innerHTML = tugasGuruWali;
+                let contentHtml = `
+                    <div class="bg-gray-100 p-4 rounded-lg border border-gray-200 mb-6">
+                        <h4 class="text-lg font-semibold text-gray-800 mb-2 flex items-center">
+                            <i class="fas fa-id-card card-icon text-gray-600"></i>
+                            Profil Singkat
+                        </h4>
+                        <p id="profile-siswa" class="text-gray-600 text-sm md:text-base">${data.profile}</p>
+                    </div>
+                    <div class="bg-gray-100 p-4 rounded-lg border border-gray-200 mb-6">
+                        <h4 class="text-lg font-semibold text-gray-800 mb-2 flex items-center">
+                            <i class="fas fa-tasks card-icon text-gray-600"></i>
+                            Tugas Umum Guru Wali
+                        </h4>
+                        <div id="tugas-wali-content" class="text-gray-600 text-sm md:text-base">${tugasGuruWali}</div>
+                    </div>
+                `;
                 
                 if (data.penanganan) {
-                    penangananKhususContent.innerHTML = `
-                        <p class="mb-4 text-gray-700">${data.penanganan.description}</p>
-                        <ol class="list-decimal list-inside space-y-2">
-                            ${data.penanganan.steps.map(step => `<li>${step}</li>`).join('')}
-                        </ol>
+                    contentHtml += `
+                        <div id="penanganan-khusus-section" class="mb-6">
+                            <h4 class="text-lg font-semibold text-gray-800 mb-2 flex items-center">
+                                <i class="fas fa-exclamation-triangle card-icon text-red-500"></i>
+                                Penanganan Masalah Khusus
+                            </h4>
+                            <div id="penanganan-khusus-content" class="text-gray-700 leading-relaxed text-sm md:text-base">
+                                <p class="mb-4 text-gray-700">${data.penanganan.description}</p>
+                                <ol class="list-decimal list-inside space-y-2">
+                                    ${data.penanganan.steps.map(step => `<li>${step}</li>`).join('')}
+                                </ol>
+                            </div>
+                        </div>
                     `;
-                    penangananKhususSection.classList.remove('hidden');
-                } else {
-                    penangananKhususSection.classList.add('hidden');
                 }
-                
-                modal.classList.remove('hidden');
-                modal.classList.add('show');
+
+                showModal(`Informasi Siswa: ${studentName}`, '', contentHtml);
             }
 
-            // Fungsi untuk mengunduh PDF
             downloadPdfBtn.addEventListener('click', async () => {
                 const selectedDate = tanggalInput.value;
                 const filename = `Absensi_Siswa_${selectedDate}.pdf`;
 
+                const originalBtnContent = downloadPdfBtn.innerHTML;
                 downloadPdfBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Mengekspor...';
                 downloadPdfBtn.disabled = true;
 
@@ -451,10 +445,13 @@
                         return { name: name, status: record ? record.status : 'unknown' };
                     });
 
-                    const filteredStudents = studentsForDate.filter(student => {
-                        return student.status === 'present';
-                    });
+                    const filteredStudents = studentsForDate.filter(student => student.status === 'present');
                     
+                    if (filteredStudents.length === 0) {
+                        showModal("Gagal Ekspor", "Tidak ada data absensi hadir untuk tanggal ini.");
+                        return;
+                    }
+
                     const tableHeaders = [["No.", "Nama Siswa", "Status Absensi", "Tanggal"]];
                     const tableData = filteredStudents.map((student, index) => [
                         allStudents.indexOf(student.name) + 1, 
@@ -463,19 +460,12 @@
                         getFormattedDate(selectedDate)
                     ]);
 
-                    if (tableData.length === 0) {
-                        alert("Tidak ada data absensi untuk tanggal ini.");
-                        return;
-                    }
-
-                    // Header untuk PDF
                     pdf.setFontSize(22);
                     pdf.text("Laporan Absensi Siswa", 105, 20, null, null, 'center');
                     pdf.setFontSize(14);
                     pdf.text(`Wali Kelas: HARLINA BASO, S.Pd, Gr`, 105, 30, null, null, 'center');
                     pdf.text(`Tanggal: ${getFormattedDate(selectedDate)}`, 105, 40, null, null, 'center');
 
-                    // Menambahkan tabel ke PDF
                     pdf.autoTable({
                         startY: 50,
                         head: tableHeaders,
@@ -487,21 +477,21 @@
                     });
 
                     pdf.save(filename);
+                    showModal("Ekspor Berhasil", "Dokumen PDF telah berhasil diunduh.");
                 } catch (error) {
                     console.error("Gagal mengekspor PDF: ", error);
+                    showModal("Ekspor Gagal", "Terjadi kesalahan saat mengekspor PDF.");
                 } finally {
-                    downloadPdfBtn.innerHTML = '<i class="fas fa-file-pdf mr-2"></i> Ekspor PDF';
+                    downloadPdfBtn.innerHTML = originalBtnContent;
                     downloadPdfBtn.disabled = false;
                 }
             });
 
-            // Event Listeners for filters
             filterAllButton.addEventListener('click', () => { currentFilter = 'all'; renderStudents(tanggalInput.value); });
             filterPresentButton.addEventListener('click', () => { currentFilter = 'present'; renderStudents(tanggalInput.value); });
             filterAbsentButton.addEventListener('click', () => { currentFilter = 'absent'; renderStudents(tanggalInput.value); });
             tanggalInput.addEventListener('change', () => { renderStudents(tanggalInput.value); });
 
-            // Tutup modal
             modalCloseButton.addEventListener('click', () => {
                 modal.classList.remove('show');
                 modal.classList.add('hidden');
@@ -513,7 +503,6 @@
                 }
             });
 
-            // Inisialisasi tampilan
             tanggalInput.value = getTodayDateString();
             renderStudents(tanggalInput.value);
         });
