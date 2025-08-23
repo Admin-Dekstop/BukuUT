@@ -10,53 +10,56 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- Font Awesome untuk ikon -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Pustaka jsPDF dan jspdf-autotable untuk membuat PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.14/jspdf.plugin.autotable.min.js"></script>
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f3f4f6;
-            background: linear-gradient(to bottom, #102a43, #224a68);
+            background-color: #f0f4f8;
+            background: linear-gradient(135deg, #f0f4f8 0%, #d9e2ec 100%);
         }
         .container-card {
             background-color: #ffffff;
             border-radius: 1.5rem;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-            padding: 2rem 1.5rem;
+            box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
             width: 100%;
             max-width: 900px;
-            animation: slideIn 1s ease-out;
+            animation: fadeInScale 0.8s ease-out forwards;
         }
         @media (min-width: 768px) {
             .container-card {
                 padding: 4rem;
             }
         }
-        @keyframes slideIn {
+        @keyframes fadeInScale {
             from {
                 opacity: 0;
-                transform: translateY(-50px);
+                transform: scale(0.98);
             }
             to {
                 opacity: 1;
-                transform: translateY(0);
+                transform: scale(1);
             }
         }
         .teacher-card {
             background: #e0f7fa;
             border-left: 6px solid #00bcd4;
             transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+            cursor: pointer;
         }
         .teacher-card:hover {
-            transform: translateY(-8px) scale(1.02);
-            box-shadow: 0 20px 30px -5px rgba(0, 0, 0, 0.15);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.1);
         }
         .student-item {
             transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out, background-color 0.3s ease-in-out;
             cursor: pointer;
-            position: relative;
         }
         .student-item:hover {
-            transform: scale(1.02);
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transform: translateX(5px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
             background-color: #f0f4f8;
         }
         ol li::marker {
@@ -65,7 +68,7 @@
             font-size: 1.1em;
         }
         .text-shadow {
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.05);
         }
         
         /* Modal styling */
@@ -82,12 +85,21 @@
             transform: scale(1);
             pointer-events: auto;
         }
+        .card-icon {
+            font-size: 1.25rem;
+            margin-right: 0.75rem;
+        }
+        .list-item-icon {
+            font-size: 1rem;
+            margin-right: 0.5rem;
+            color: #6b7280;
+        }
     </style>
 </head>
 <body class="min-h-screen flex items-center justify-center p-4 md:p-8">
 
     <!-- Main Container -->
-    <div class="container-card transform transition-transform duration-500 ease-in-out">
+    <div class="container-card">
         <div class="text-center mb-8 md:mb-12">
             <i class="fas fa-graduation-cap text-5xl text-blue-500 mb-4 animate-bounce"></i>
             <h1 class="text-4xl md:text-6xl font-extrabold text-gray-800 mb-2 text-shadow">Daftar Siswa Guru Wali</h1>
@@ -95,9 +107,9 @@
         </div>
 
         <!-- Kartu informasi guru wali -->
-        <div class="teacher-card p-6 md:p-8 rounded-xl shadow-lg mb-8 md:mb-12 transition-all duration-300 ease-in-out">
+        <div class="teacher-card p-6 md:p-8 rounded-xl shadow-lg mb-8 md:mb-12">
             <h2 class="text-2xl md:text-3xl font-bold text-teal-700 mb-2 flex items-center">
-                <i class="fas fa-user-tie text-teal-600 mr-3"></i>
+                <i class="fas fa-chalkboard-user text-teal-600 mr-3"></i>
                 Informasi Wali Kelas
             </h2>
             <p class="text-xl md:text-2xl text-teal-800 font-semibold mb-1">HARLINA BASO, S.Pd, Gr</p>
@@ -107,17 +119,39 @@
             </div>
         </div>
 
-        <!-- Bagian daftar siswa -->
-        <div class="space-y-6">
-            <h2 class="text-2xl md:text-3xl font-semibold text-gray-800 border-b-2 border-gray-200 pb-2 flex items-center">
-                <i class="fas fa-users text-gray-500 mr-3"></i>
-                Daftar Siswa
-            </h2>
-            
-            <!-- Daftar siswa dengan penomoran -->
-            <ol id="student-list" class="bg-gray-50 border border-gray-200 rounded-lg p-4 md:p-6 space-y-4 list-decimal list-inside">
+        <!-- Bagian filter absensi -->
+        <div class="mb-6 flex space-x-2 md:space-x-4">
+            <button id="filter-all" class="flex-1 px-4 py-2 rounded-lg font-semibold text-white bg-blue-500 hover:bg-blue-600 transition-colors">
+                <i class="fas fa-users-line mr-2"></i>Semua Siswa
+            </button>
+            <button id="filter-present" class="flex-1 px-4 py-2 rounded-lg font-semibold text-white bg-green-500 hover:bg-green-600 transition-colors">
+                <i class="fas fa-user-check mr-2"></i>Hadir
+            </button>
+            <button id="filter-absent" class="flex-1 px-4 py-2 rounded-lg font-semibold text-white bg-red-500 hover:bg-red-600 transition-colors">
+                <i class="fas fa-user-xmark mr-2"></i>Tidak Hadir
+            </button>
+        </div>
+        
+        <!-- Kontainer untuk data yang akan diunduh PDF -->
+        <div id="pdf-content">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-2xl md:text-3xl font-semibold text-gray-800 flex items-center">
+                    <i class="fas fa-clipboard-user text-gray-500 mr-3"></i>
+                    Daftar Absensi Siswa
+                </h2>
+                <span id="tanggal-sekarang" class="text-gray-600 text-sm md:text-base font-medium"></span>
+            </div>
+
+            <ul id="student-list" class="bg-gray-50 border border-gray-200 rounded-lg p-4 md:p-6 space-y-4">
                 <!-- Daftar siswa akan di-render di sini oleh JavaScript -->
-            </ol>
+            </ul>
+        </div>
+        
+        <!-- Tombol Unduh PDF -->
+        <div class="mt-8 text-center">
+            <button id="download-pdf-btn" class="px-6 py-3 bg-indigo-500 text-white font-bold rounded-lg shadow-md hover:bg-indigo-600 transition-colors">
+                <i class="fas fa-file-pdf mr-2"></i> Ekspor PDF
+            </button>
         </div>
     </div>
 
@@ -129,7 +163,7 @@
             <!-- Profil Siswa -->
             <div class="bg-gray-100 p-4 rounded-lg border border-gray-200 mb-6">
                 <h4 class="text-lg font-semibold text-gray-800 mb-2 flex items-center">
-                    <i class="fas fa-id-card text-gray-600 mr-2"></i>
+                    <i class="fas fa-id-card card-icon text-gray-600"></i>
                     Profil Singkat
                 </h4>
                 <p id="profile-siswa" class="text-gray-600 text-sm md:text-base"></p>
@@ -138,7 +172,7 @@
             <!-- Bagian Tugas Guru Wali -->
             <div class="bg-gray-100 p-4 rounded-lg border border-gray-200 mb-6">
                 <h4 class="text-lg font-semibold text-gray-800 mb-2 flex items-center">
-                    <i class="fas fa-tasks text-gray-600 mr-2"></i>
+                    <i class="fas fa-tasks card-icon text-gray-600"></i>
                     Tugas Umum Guru Wali
                 </h4>
                 <div id="tugas-wali-content" class="text-gray-600 text-sm md:text-base"></div>
@@ -147,7 +181,7 @@
             <!-- Bagian Penanganan Masalah Khusus -->
             <div id="penanganan-khusus-section" class="mb-6 hidden">
                 <h4 class="text-lg font-semibold text-gray-800 mb-2 flex items-center">
-                    <i class="fas fa-exclamation-triangle text-red-500 mr-2"></i>
+                    <i class="fas fa-exclamation-triangle card-icon text-red-500"></i>
                     Penanganan Masalah Khusus
                 </h4>
                 <div id="penanganan-khusus-content" class="text-gray-700 leading-relaxed text-sm md:text-base"></div>
@@ -160,6 +194,11 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const studentListElement = document.getElementById('student-list');
+            const tanggalSekarang = document.getElementById('tanggal-sekarang');
+            const filterAllButton = document.getElementById('filter-all');
+            const filterPresentButton = document.getElementById('filter-present');
+            const filterAbsentButton = document.getElementById('filter-absent');
+            const downloadPdfBtn = document.getElementById('download-pdf-btn');
             const modal = document.getElementById('modal-masalah');
             const modalTitle = document.getElementById('modal-title');
             const profileSiswa = document.getElementById('profile-siswa');
@@ -169,28 +208,28 @@
             const modalCloseButton = document.getElementById('modal-close');
 
             const students = [
-                "Muh. Fahril latjeno",
-                "Muhammad farhat",
-                "Nabil m. Kantja",
-                "Nabila putri ayunda",
-                "Nailah destifanisya",
-                "Nur aida y. Djdalali",
-                "Nuraini lamadjido",
-                "Nurul vaizya",
-                "Qanita aulia qalbi",
-                "Rahmat reza s.palanewen",
-                "Riska maulida r. Singgo",
-                "Risman",
-                "Suaib h. Legu",
-                "Uyun nurjanah tarampu"
+                { name: "Muh. Fahril latjeno", status: 'unknown' },
+                { name: "Muhammad farhat", status: 'unknown' },
+                { name: "Nabil m. Kantja", status: 'unknown' },
+                { name: "Nabila putri ayunda", status: 'unknown' },
+                { name: "Nailah destifanisya", status: 'unknown' },
+                { name: "Nur aida y. Djdalali", status: 'unknown' },
+                { name: "Nuraini lamadjido", status: 'unknown' },
+                { name: "Nurul vaizya", status: 'unknown' },
+                { name: "Qanita aulia qalbi", status: 'unknown' },
+                { name: "Rahmat reza s.palanewen", status: 'unknown' },
+                { name: "Riska maulida r. Singgo", status: 'unknown' },
+                { name: "Risman", status: 'unknown' },
+                { name: "Suaib h. Legu", status: 'unknown' },
+                { name: "Uyun nurjanah tarampu", status: 'unknown' }
             ];
 
             const tugasGuruWali = `
                 <ul class="list-disc list-inside space-y-2 text-sm md:text-base">
-                    <li>**Bidang Administrasi & Organisasi:** Mengelola buku kehadiran, buku rapor, dan administrasi kelas.</li>
-                    <li>**Bidang Pembinaan & Bimbingan:** Mengenal siswa secara personal, memberikan motivasi, dan menanamkan kedisiplinan.</li>
-                    <li>**Bidang Komunikasi & Sosial:** Menjadi jembatan komunikasi antara sekolah, siswa, dan orang tua.</li>
-                    <li>**Bidang Evaluasi & Pelaporan:** Melakukan penilaian perilaku dan menyusun laporan perkembangan siswa secara berkala.</li>
+                    <li><i class="fas fa-clipboard-check list-item-icon"></i>**Administrasi & Organisasi:** Mengelola data siswa, absensi, dan rapor.</li>
+                    <li><i class="fas fa-hand-holding-heart list-item-icon"></i>**Pembinaan & Bimbingan:** Membimbing karakter dan motivasi siswa secara personal.</li>
+                    <li><i class="fas fa-comments list-item-icon"></i>**Komunikasi & Sosial:** Menjadi penghubung utama antara siswa, orang tua, dan pihak sekolah.</li>
+                    <li><i class="fas fa-chart-line list-item-icon"></i>**Evaluasi & Pelaporan:** Memantau perkembangan siswa dan menyusun laporan secara berkala.</li>
                 </ul>
             `;
             
@@ -245,37 +284,155 @@
                 }
             };
 
-            // Render daftar siswa ke dalam HTML
-            students.forEach((student) => {
-                const listItem = document.createElement('li');
-                listItem.className = "student-item p-4 rounded-md shadow-sm border border-gray-100 text-gray-700 cursor-pointer transition-all duration-300 ease-in-out flex items-center justify-between";
-                listItem.innerHTML = `<span class="flex-grow">${student}</span> <i class="fas fa-info-circle text-gray-400 text-lg"></i>`;
-                studentListElement.appendChild(listItem);
+            // Fungsi untuk mendapatkan tanggal dan hari
+            function getFormattedDate() {
+                const date = new Date();
+                const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+                return date.toLocaleDateString('id-ID', options);
+            }
 
-                listItem.addEventListener('click', () => {
-                    const studentName = listItem.querySelector('span').textContent;
-                    const data = dataSiswa[studentName] || dataSiswa.default;
-                    
-                    modalTitle.textContent = `Informasi Siswa: ${studentName}`;
-                    profileSiswa.textContent = data.profile;
-                    tugasWaliContent.innerHTML = tugasGuruWali;
-                    
-                    if (data.penanganan) {
-                        penangananKhususContent.innerHTML = `
-                            <p class="mb-4 text-gray-700">${data.penanganan.description}</p>
-                            <ol class="list-decimal list-inside space-y-2">
-                                ${data.penanganan.steps.map(step => `<li>${step}</li>`).join('')}
-                            </ol>
-                        `;
-                        penangananKhususSection.classList.remove('hidden');
-                    } else {
-                        penangananKhususSection.classList.add('hidden');
-                    }
-                    
-                    modal.classList.remove('hidden');
-                    modal.classList.add('show');
+            // Fungsi untuk merender daftar siswa
+            function renderStudents(filter = 'all') {
+                studentListElement.innerHTML = '';
+                const filteredStudents = students.filter(student => {
+                    if (filter === 'all') return true;
+                    return student.status === filter;
                 });
+
+                filteredStudents.forEach((student) => {
+                    const listItem = document.createElement('li');
+                    const statusColor = student.status === 'present' ? 'bg-green-100 border-green-300' : 
+                                        student.status === 'absent' ? 'bg-red-100 border-red-300' : 'bg-gray-100 border-gray-200';
+                    const statusIcon = student.status === 'present' ? '<i class="fas fa-check-circle text-green-500 mr-2"></i>' : 
+                                        student.status === 'absent' ? '<i class="fas fa-times-circle text-red-500 mr-2"></i>' : '';
+
+                    listItem.className = `p-4 rounded-md shadow-sm border ${statusColor} text-gray-700 flex items-center justify-between`;
+                    
+                    const nameContainer = document.createElement('div');
+                    nameContainer.className = "flex items-center space-x-2";
+                    nameContainer.innerHTML = `${statusIcon}<span>${student.name}</span>`;
+
+                    const actionsContainer = document.createElement('div');
+                    actionsContainer.className = "flex items-center space-x-2";
+
+                    const absentButton = document.createElement('button');
+                    absentButton.innerHTML = '<i class="fas fa-user-xmark"></i>';
+                    absentButton.className = "px-3 py-1 text-red-500 rounded-md hover:bg-red-200 transition-colors";
+                    absentButton.onclick = (e) => {
+                        e.stopPropagation();
+                        student.status = 'absent';
+                        renderStudents();
+                    };
+                    
+                    const presentButton = document.createElement('button');
+                    presentButton.innerHTML = '<i class="fas fa-user-check"></i>';
+                    presentButton.className = "px-3 py-1 text-green-500 rounded-md hover:bg-green-200 transition-colors";
+                    presentButton.onclick = (e) => {
+                        e.stopPropagation();
+                        student.status = 'present';
+                        renderStudents();
+                    };
+
+                    const infoButton = document.createElement('button');
+                    infoButton.innerHTML = '<i class="fas fa-info-circle"></i>';
+                    infoButton.className = "px-3 py-1 text-gray-400 rounded-md hover:bg-gray-200 transition-colors";
+                    infoButton.onclick = (e) => {
+                        e.stopPropagation();
+                        showStudentInfo(student.name);
+                    };
+
+                    // Sembunyikan tombol absen jika status sudah diatur
+                    if (student.status !== 'unknown') {
+                         nameContainer.classList.add("cursor-pointer");
+                         nameContainer.onclick = (e) => { showStudentInfo(student.name) };
+                    } else {
+                        actionsContainer.appendChild(presentButton);
+                        actionsContainer.appendChild(absentButton);
+                    }
+                    actionsContainer.appendChild(infoButton);
+
+                    listItem.appendChild(nameContainer);
+                    listItem.appendChild(actionsContainer);
+                    studentListElement.appendChild(listItem);
+                });
+            }
+
+            // Fungsi untuk menampilkan modal informasi siswa
+            function showStudentInfo(studentName) {
+                const data = dataSiswa[studentName] || dataSiswa.default;
+                
+                modalTitle.textContent = `Informasi Siswa: ${studentName}`;
+                profileSiswa.textContent = data.profile;
+                tugasWaliContent.innerHTML = tugasGuruWali;
+                
+                if (data.penanganan) {
+                    penangananKhususContent.innerHTML = `
+                        <p class="mb-4 text-gray-700">${data.penanganan.description}</p>
+                        <ol class="list-decimal list-inside space-y-2">
+                            ${data.penanganan.steps.map(step => `<li>${step}</li>`).join('')}
+                        </ol>
+                    `;
+                    penangananKhususSection.classList.remove('hidden');
+                } else {
+                    penangananKhususSection.classList.add('hidden');
+                }
+                
+                modal.classList.remove('hidden');
+                modal.classList.add('show');
+            }
+
+            // Fungsi untuk mengunduh PDF
+            downloadPdfBtn.addEventListener('click', async () => {
+                const filename = `Absensi_Siswa_${getFormattedDate()}.pdf`;
+
+                // Nonaktifkan tombol untuk sementara
+                downloadPdfBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Mengekspor...';
+                downloadPdfBtn.disabled = true;
+
+                try {
+                    const { jsPDF } = window.jspdf;
+                    const pdf = new jsPDF('p', 'mm', 'a4');
+                    // Data untuk tabel
+                    const tableHeaders = [["No.", "Nama Siswa", "Status Absensi", "Tanggal"]];
+                    const tableData = students.map((student, index) => [
+                        index + 1, 
+                        student.name, 
+                        student.status === 'present' ? 'Hadir' : student.status === 'absent' ? 'Tidak Hadir' : 'Belum Diabsen',
+                        getFormattedDate()
+                    ]);
+
+                    // Header untuk PDF
+                    pdf.setFontSize(22);
+                    pdf.text("Laporan Absensi Siswa", 105, 20, null, null, 'center');
+                    pdf.setFontSize(14);
+                    pdf.text(`Wali Kelas: HARLINA BASO, S.Pd, Gr`, 105, 30, null, null, 'center');
+                    pdf.text(`Tanggal: ${getFormattedDate()}`, 105, 40, null, null, 'center');
+
+                    // Menambahkan tabel ke PDF
+                    pdf.autoTable({
+                        startY: 50,
+                        head: tableHeaders,
+                        body: tableData,
+                        theme: 'grid',
+                        headStyles: { fillColor: [52, 73, 94] },
+                        styles: { fontSize: 10, cellPadding: 2, overflow: 'linebreak' },
+                        columnStyles: { 0: { cellWidth: 15 }, 1: { cellWidth: 70 }, 2: { cellWidth: 35 }, 3: { cellWidth: 60 } }
+                    });
+
+                    pdf.save(filename);
+                } catch (error) {
+                    console.error("Gagal mengekspor PDF: ", error);
+                } finally {
+                    // Aktifkan kembali tombol setelah selesai
+                    downloadPdfBtn.innerHTML = '<i class="fas fa-file-pdf mr-2"></i> Ekspor PDF';
+                    downloadPdfBtn.disabled = false;
+                }
             });
+
+            // Event Listeners untuk filter
+            filterAllButton.addEventListener('click', () => renderStudents('all'));
+            filterPresentButton.addEventListener('click', () => renderStudents('present'));
+            filterAbsentButton.addEventListener('click', () => renderStudents('absent'));
 
             // Tutup modal
             modalCloseButton.addEventListener('click', () => {
@@ -288,6 +445,10 @@
                     modal.classList.add('hidden');
                 }
             });
+
+            // Inisialisasi tampilan
+            tanggalSekarang.textContent = getFormattedDate();
+            renderStudents();
         });
     </script>
 </body>
