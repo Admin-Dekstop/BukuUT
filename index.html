@@ -3,145 +3,226 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pencari Modul UT</title>
-    <!-- Tailwind CSS CDN untuk styling yang cepat dan responsif -->
+    <title>Daftar Siswa Guru Wali</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome untuk ikon -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* Menggunakan font Inter untuk tampilan modern */
         body {
             font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+            background: linear-gradient(to bottom, #102a43, #224a68);
+        }
+        .container-card {
+            background-color: #ffffff;
+            border-radius: 1rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            padding: 2rem 1.5rem; /* Padding responsif */
+            width: 100%;
+            max-width: 900px;
+            animation: slideIn 1s ease-out;
+        }
+        @media (min-width: 768px) {
+            .container-card {
+                padding: 4rem; /* Padding desktop */
+            }
+        }
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .teacher-card {
+            background: #e0f7fa;
+            border-left: 6px solid #00bcd4;
+            transition: transform 0.3s ease-in-out;
+        }
+        .teacher-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 20px -5px rgba(0, 0, 0, 0.1);
+        }
+        .student-item {
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+            cursor: pointer;
+        }
+        .student-item:hover {
+            transform: scale(1.02);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            background-color: #f0f4f8;
+        }
+        ol li::marker {
+            font-weight: 700;
+            color: #4a5568;
+            font-size: 1.1em;
+        }
+        .text-shadow {
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        .icon-pemanis {
+            color: #d1d5db;
+        }
+
+        /* Modal styling */
+        .modal {
+            transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+        }
+        .modal.hidden {
+            opacity: 0;
+            transform: scale(0.95);
+            pointer-events: none;
+        }
+        .modal.show {
+            opacity: 1;
+            transform: scale(1);
+            pointer-events: auto;
         }
     </style>
 </head>
-<body class="bg-gray-100 text-gray-800 p-4 min-h-screen flex items-center justify-center">
+<body class="min-h-screen flex items-center justify-center p-4 md:p-8">
 
-    <div class="w-full max-w-2xl bg-white rounded-xl shadow-lg p-6 md:p-10 border border-gray-200">
-        <!-- Header Aplikasi -->
-        <header class="text-center mb-8">
-            <h1 class="text-3xl md:text-4xl font-extrabold text-blue-600 mb-2">Pencari Modul UT</h1>
-            <p class="text-gray-500 text-sm md:text-base">
-                Temukan dan unduh modul buku Universitas Terbuka dengan mudah.
-            </p>
-        </header>
+    <!-- Main Container -->
+    <div class="container-card transform transition-transform duration-500 ease-in-out">
+        <div class="text-center mb-8 md:mb-12">
+            <i class="fas fa-graduation-cap text-5xl text-blue-500 mb-4 animate-bounce"></i>
+            <h1 class="text-4xl md:text-6xl font-extrabold text-gray-800 mb-2 text-shadow">Daftar Siswa Guru Wali</h1>
+            <p class="text-md md:text-lg text-gray-500 font-medium">Solusi digital untuk manajemen data siswa yang efisien.</p>
+        </div>
 
-        <!-- Form Pencarian -->
-        <div class="mb-6">
-            <label for="search-input" class="sr-only">Cari Modul</label>
-            <div class="flex flex-col md:flex-row gap-2">
-                <input
-                    type="text"
-                    id="search-input"
-                    placeholder="Masukkan nomor buku atau nama buku..."
-                    class="flex-grow p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200"
-                />
-                <button
-                    id="search-button"
-                    class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200"
-                >
-                    Cari
-                </button>
+        <!-- Kartu informasi guru wali -->
+        <div class="teacher-card p-6 md:p-8 rounded-xl shadow-lg mb-8 md:mb-12 transition-all duration-300 ease-in-out">
+            <h2 class="text-2xl md:text-3xl font-bold text-teal-700 mb-2 flex items-center">
+                <i class="fas fa-user-tie text-teal-600 mr-3"></i>
+                Informasi Wali Kelas
+            </h2>
+            <p class="text-xl md:text-2xl text-teal-800 font-semibold mb-1">HARLINA BASO, S.Pd, Gr</p>
+            <p class="text-sm md:text-lg text-teal-600 mt-2">NIP: 19830730 200902 2 001</p>
+            <div class="mt-4 text-sm text-teal-500">
+                <p>Wali Kelas: IX A</p>
             </div>
         </div>
 
-        <!-- Area Hasil Pencarian -->
-        <div id="results-container" class="space-y-4">
-            <!-- Hasil akan ditampilkan di sini oleh JavaScript -->
-            <p class="text-center text-gray-400 mt-10">
-                Silakan masukkan kata kunci untuk memulai pencarian.
-            </p>
+        <!-- Bagian daftar siswa -->
+        <div class="space-y-6">
+            <h2 class="text-2xl md:text-3xl font-semibold text-gray-800 border-b-2 border-gray-200 pb-2 flex items-center">
+                <i class="fas fa-users text-gray-500 mr-3"></i>
+                Daftar Siswa
+            </h2>
+            
+            <!-- Daftar siswa dengan penomoran -->
+            <ol id="student-list" class="bg-gray-50 border border-gray-200 rounded-lg p-4 md:p-6 space-y-4 list-decimal list-inside">
+                <!-- Daftar siswa akan di-render di sini oleh JavaScript -->
+            </ol>
+        </div>
+    </div>
+
+    <!-- Modal untuk menampilkan penanganan masalah -->
+    <div id="modal-masalah" class="modal fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50 p-4 hidden">
+        <div class="bg-white p-6 md:p-8 rounded-xl shadow-2xl w-full max-w-xl">
+            <h3 id="modal-title" class="text-xl md:text-2xl font-bold text-gray-800 mb-4"></h3>
+            <p id="modal-content" class="text-gray-700 leading-relaxed mb-6 text-sm md:text-base"></p>
+            <button id="modal-close" class="px-6 py-2 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 transition-colors w-full md:w-auto">Tutup</button>
         </div>
     </div>
 
     <script>
-        // Data dummy untuk demonstrasi.
-        // Dalam aplikasi nyata, data ini akan diambil dari server atau database.
-        const modules = [
-            { bookNumber: 'MKDU4110', bookName: 'Bahasa Inggris I', downloadUrl: 'https://placehold.co/600x400/0000FF/FFFFFF?text=Modul-MKDU4110.pdf' },
-            { bookNumber: 'EKMA4111', bookName: 'Pengantar Bisnis', downloadUrl: 'https://placehold.co/600x400/FF0000/FFFFFF?text=Modul-EKMA4111.pdf' },
-            { bookNumber: 'ISIP4112', bookName: 'Pengantar Ilmu Ekonomi', downloadUrl: 'https://placehold.co/600x400/00FF00/FFFFFF?text=Modul-ISIP4112.pdf' },
-            { bookNumber: 'ADBI4210', bookName: 'Pemasaran Jasa', downloadUrl: 'https://placehold.co/600x400/FFC0CB/000000?text=Modul-ADBI4210.pdf' },
-            { bookNumber: 'MNRT4402', bookName: 'Matematika Terapan', downloadUrl: 'https://placehold.co/600x400/800080/FFFFFF?text=Modul-MNRT4402.pdf' },
-            { bookNumber: 'SKOM4204', bookName: 'Perilaku Konsumen', downloadUrl: 'https://placehold.co/600x400/FFFF00/000000?text=Modul-SKOM4204.pdf' },
-            { bookNumber: 'IPEM4319', bookName: 'Sistem Pemerintahan', downloadUrl: 'https://placehold.co/600x400/FFA500/000000?text=Modul-IPEM4319.pdf' },
-            { bookNumber: 'PAJA4234', bookName: 'Pajak Daerah', downloadUrl: 'https://placehold.co/600x400/808080/FFFFFF?text=Modul-PAJA4234.pdf' },
-        ];
-
-        // Mendapatkan elemen-elemen DOM
-        const searchInput = document.getElementById('search-input');
-        const searchButton = document.getElementById('search-button');
-        const resultsContainer = document.getElementById('results-container');
-
-        // Fungsi untuk merender hasil pencarian
-        function renderResults(filteredModules) {
-            // Menghapus hasil sebelumnya
-            resultsContainer.innerHTML = '';
-
-            // Jika tidak ada hasil, tampilkan pesan
-            if (filteredModules.length === 0) {
-                resultsContainer.innerHTML = `
-                    <p class="text-center text-gray-400 mt-10">
-                        Tidak ada modul yang cocok dengan pencarian Anda.
-                    </p>
-                `;
-                return;
-            }
-
-            // Membangun dan menampilkan setiap hasil
-            filteredModules.forEach(module => {
-                const moduleCard = document.createElement('div');
-                moduleCard.className = 'bg-white border border-gray-200 rounded-lg p-4 md:p-6 shadow-sm flex flex-col md:flex-row items-center justify-between transition-transform duration-200 hover:scale-[1.01]';
-                moduleCard.innerHTML = `
-                    <div class="mb-4 md:mb-0 md:mr-6 text-center md:text-left">
-                        <p class="text-sm font-semibold text-gray-500 mb-1">Nomor Buku</p>
-                        <h3 class="text-lg md:text-xl font-bold text-blue-600">${module.bookNumber}</h3>
-                    </div>
-                    <div class="flex-grow text-center md:text-left mb-4 md:mb-0">
-                        <p class="text-sm font-semibold text-gray-500 mb-1">Nama Buku</p>
-                        <h4 class="text-md md:text-lg font-semibold text-gray-700">${module.bookName}</h4>
-                    </div>
-                    <a href="${module.downloadUrl}" download="${module.bookNumber}-${module.bookName}.pdf" class="w-full md:w-auto bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg text-center shadow-md transition-colors duration-200">
-                        Unduh
-                    </a>
-                `;
-                resultsContainer.appendChild(moduleCard);
-            });
-        }
-
-        // Fungsi utama untuk menangani pencarian
-        function handleSearch() {
-            const query = searchInput.value.toLowerCase().trim();
-
-            if (query === '') {
-                // Tampilkan semua modul jika input kosong
-                renderResults(modules);
-                return;
-            }
-
-            // Memfilter modul berdasarkan nomor buku atau nama buku
-            const filteredModules = modules.filter(module =>
-                module.bookNumber.toLowerCase().includes(query) ||
-                module.bookName.toLowerCase().includes(query)
-            );
-
-            renderResults(filteredModules);
-        }
-
-        // Menambahkan event listener ke tombol pencarian
-        searchButton.addEventListener('click', handleSearch);
-
-        // Menambahkan event listener untuk tombol Enter pada input
-        searchInput.addEventListener('keyup', function(event) {
-            if (event.key === 'Enter') {
-                handleSearch();
-            }
-        });
-
-        // Menampilkan semua modul saat halaman pertama kali dimuat
         document.addEventListener('DOMContentLoaded', () => {
-            renderResults(modules);
+            const studentListElement = document.getElementById('student-list');
+            const modal = document.getElementById('modal-masalah');
+            const modalTitle = document.getElementById('modal-title');
+            const modalContent = document.getElementById('modal-content');
+            const modalCloseButton = document.getElementById('modal-close');
+
+            const students = [
+                "Muh. Fahril latjeno",
+                "Muhammad farhat",
+                "Nabil m. Kantja",
+                "Nabila putri ayunda",
+                "Nailah destifanisya",
+                "Nur aida y. Djdalali",
+                "Nuraini lamadjido",
+                "Nurul vaizya",
+                "Qanita aulia qalbi",
+                "Rahmat reza s.palanewen",
+                "Riska maulida r. Singgo",
+                "Risman",
+                "Suaib h. Legu",
+                "Uyun nurjanah tarampu"
+            ];
+
+            const penangananMasalah = {
+                "umum": {
+                    title: "Penanganan Masalah Umum",
+                    description: "Jika ada masalah umum terkait siswa, berikut adalah langkah-langkah yang bisa Anda ambil:",
+                    steps: [
+                        "Panggil siswa secara pribadi untuk berdiskusi.",
+                        "Hubungi orang tua atau wali siswa.",
+                        "Diskusikan dengan guru mata pelajaran terkait.",
+                        "Dokumentasikan semua interaksi dan langkah-langkah yang telah diambil."
+                    ]
+                },
+                "Risman": {
+                    title: "Penanganan Masalah untuk Risman",
+                    description: "Jika ada masalah terkait Risman, pertimbangkan langkah-langkah berikut:",
+                    steps: [
+                        "Minta bantuan guru Bimbingan Konseling (BK) untuk mediasi.",
+                        "Ajak Risman berpartisipasi dalam kegiatan ekstrakurikuler.",
+                        "Berikan tugas atau tanggung jawab yang bisa meningkatkan rasa percaya dirinya."
+                    ]
+                },
+                "Muhammad farhat": {
+                    title: "Penanganan Masalah untuk Muhammad farhat",
+                    description: "Jika ada masalah terkait Muhammad farhat, pertimbangkan langkah-langkah berikut:",
+                    steps: [
+                        "Lakukan pertemuan tripartit dengan siswa, orang tua, dan guru.",
+                        "Identifikasi penyebab masalah dan tawarkan solusi yang konstruktif.",
+                        "Berikan dukungan moral dan pastikan siswa merasa didukung."
+                    ]
+                }
+            };
+
+            // Render daftar siswa ke dalam HTML
+            students.forEach((student) => {
+                const listItem = document.createElement('li');
+                listItem.textContent = student;
+                listItem.className = "student-item p-4 rounded-md shadow-sm border border-gray-100 text-gray-700 cursor-pointer transition-all duration-300 ease-in-out flex items-center justify-between";
+                listItem.innerHTML = `<span class="flex-grow">${student}</span> <i class="fas fa-info-circle text-gray-400 text-lg"></i>`;
+                studentListElement.appendChild(listItem);
+
+                listItem.addEventListener('click', () => {
+                    const studentName = listItem.querySelector('span').textContent;
+                    const data = penangananMasalah[studentName] || penangananMasalah.umum;
+                    
+                    modalTitle.textContent = data.title;
+                    modalContent.innerHTML = `<p class="mb-4">${data.description}</p>` +
+                                             `<ol class="list-decimal list-inside space-y-2">` +
+                                             data.steps.map(step => `<li>${step}</li>`).join('') +
+                                             `</ol>`;
+                    modal.classList.remove('hidden');
+                    modal.classList.add('show');
+                });
+            });
+
+            // Tutup modal
+            modalCloseButton.addEventListener('click', () => {
+                modal.classList.remove('show');
+                modal.classList.add('hidden');
+            });
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.classList.remove('show');
+                    modal.classList.add('hidden');
+                }
+            });
         });
-
     </script>
-
 </body>
 </html>
+
