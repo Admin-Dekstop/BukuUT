@@ -18,16 +18,16 @@
         }
         .container-card {
             background-color: #ffffff;
-            border-radius: 1rem;
+            border-radius: 1.5rem;
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-            padding: 2rem 1.5rem; /* Padding responsif */
+            padding: 2rem 1.5rem;
             width: 100%;
             max-width: 900px;
             animation: slideIn 1s ease-out;
         }
         @media (min-width: 768px) {
             .container-card {
-                padding: 4rem; /* Padding desktop */
+                padding: 4rem;
             }
         }
         @keyframes slideIn {
@@ -43,15 +43,16 @@
         .teacher-card {
             background: #e0f7fa;
             border-left: 6px solid #00bcd4;
-            transition: transform 0.3s ease-in-out;
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
         }
         .teacher-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 20px -5px rgba(0, 0, 0, 0.1);
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 20px 30px -5px rgba(0, 0, 0, 0.15);
         }
         .student-item {
-            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out, background-color 0.3s ease-in-out;
             cursor: pointer;
+            position: relative;
         }
         .student-item:hover {
             transform: scale(1.02);
@@ -66,10 +67,7 @@
         .text-shadow {
             text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
         }
-        .icon-pemanis {
-            color: #d1d5db;
-        }
-
+        
         /* Modal styling */
         .modal {
             transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
@@ -125,10 +123,37 @@
 
     <!-- Modal untuk menampilkan penanganan masalah -->
     <div id="modal-masalah" class="modal fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50 p-4 hidden">
-        <div class="bg-white p-6 md:p-8 rounded-xl shadow-2xl w-full max-w-xl">
+        <div class="bg-white p-6 md:p-8 rounded-xl shadow-2xl w-full max-w-xl overflow-y-auto max-h-[90vh]">
             <h3 id="modal-title" class="text-xl md:text-2xl font-bold text-gray-800 mb-4"></h3>
-            <p id="modal-content" class="text-gray-700 leading-relaxed mb-6 text-sm md:text-base"></p>
-            <button id="modal-close" class="px-6 py-2 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 transition-colors w-full md:w-auto">Tutup</button>
+            
+            <!-- Profil Siswa -->
+            <div class="bg-gray-100 p-4 rounded-lg border border-gray-200 mb-6">
+                <h4 class="text-lg font-semibold text-gray-800 mb-2 flex items-center">
+                    <i class="fas fa-id-card text-gray-600 mr-2"></i>
+                    Profil Singkat
+                </h4>
+                <p id="profile-siswa" class="text-gray-600 text-sm md:text-base"></p>
+            </div>
+
+            <!-- Bagian Tugas Guru Wali -->
+            <div class="bg-gray-100 p-4 rounded-lg border border-gray-200 mb-6">
+                <h4 class="text-lg font-semibold text-gray-800 mb-2 flex items-center">
+                    <i class="fas fa-tasks text-gray-600 mr-2"></i>
+                    Tugas Umum Guru Wali
+                </h4>
+                <div id="tugas-wali-content" class="text-gray-600 text-sm md:text-base"></div>
+            </div>
+
+            <!-- Bagian Penanganan Masalah Khusus -->
+            <div id="penanganan-khusus-section" class="mb-6 hidden">
+                <h4 class="text-lg font-semibold text-gray-800 mb-2 flex items-center">
+                    <i class="fas fa-exclamation-triangle text-red-500 mr-2"></i>
+                    Penanganan Masalah Khusus
+                </h4>
+                <div id="penanganan-khusus-content" class="text-gray-700 leading-relaxed text-sm md:text-base"></div>
+            </div>
+
+            <button id="modal-close" class="px-6 py-2 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 transition-colors w-full md:w-auto mt-4">Tutup</button>
         </div>
     </div>
 
@@ -137,7 +162,10 @@
             const studentListElement = document.getElementById('student-list');
             const modal = document.getElementById('modal-masalah');
             const modalTitle = document.getElementById('modal-title');
-            const modalContent = document.getElementById('modal-content');
+            const profileSiswa = document.getElementById('profile-siswa');
+            const tugasWaliContent = document.getElementById('tugas-wali-content');
+            const penangananKhususSection = document.getElementById('penanganan-khusus-section');
+            const penangananKhususContent = document.getElementById('penanganan-khusus-content');
             const modalCloseButton = document.getElementById('modal-close');
 
             const students = [
@@ -157,54 +185,93 @@
                 "Uyun nurjanah tarampu"
             ];
 
-            const penangananMasalah = {
-                "umum": {
-                    title: "Penanganan Masalah Umum",
-                    description: "Jika ada masalah umum terkait siswa, berikut adalah langkah-langkah yang bisa Anda ambil:",
-                    steps: [
-                        "Panggil siswa secara pribadi untuk berdiskusi.",
-                        "Hubungi orang tua atau wali siswa.",
-                        "Diskusikan dengan guru mata pelajaran terkait.",
-                        "Dokumentasikan semua interaksi dan langkah-langkah yang telah diambil."
-                    ]
-                },
-                "Risman": {
-                    title: "Penanganan Masalah untuk Risman",
-                    description: "Jika ada masalah terkait Risman, pertimbangkan langkah-langkah berikut:",
-                    steps: [
-                        "Minta bantuan guru Bimbingan Konseling (BK) untuk mediasi.",
-                        "Ajak Risman berpartisipasi dalam kegiatan ekstrakurikuler.",
-                        "Berikan tugas atau tanggung jawab yang bisa meningkatkan rasa percaya dirinya."
-                    ]
+            const tugasGuruWali = `
+                <ul class="list-disc list-inside space-y-2 text-sm md:text-base">
+                    <li>**Bidang Administrasi & Organisasi:** Mengelola buku kehadiran, buku rapor, dan administrasi kelas.</li>
+                    <li>**Bidang Pembinaan & Bimbingan:** Mengenal siswa secara personal, memberikan motivasi, dan menanamkan kedisiplinan.</li>
+                    <li>**Bidang Komunikasi & Sosial:** Menjadi jembatan komunikasi antara sekolah, siswa, dan orang tua.</li>
+                    <li>**Bidang Evaluasi & Pelaporan:** Melakukan penilaian perilaku dan menyusun laporan perkembangan siswa secara berkala.</li>
+                </ul>
+            `;
+            
+            const dataSiswa = {
+                "Muh. Fahril latjeno": {
+                    profile: "Siswa yang aktif dan memiliki banyak teman. Perlu bimbingan dalam manajemen waktu agar tidak mengganggu fokus belajar.",
+                    penanganan: {
+                        title: "Penanganan Masalah: Manajemen Waktu",
+                        description: "Fahril perlu belajar menyeimbangkan antara kegiatan sosial dan akademis.",
+                        steps: [
+                            "Diskusikan jadwal harian dengannya, bantu susun prioritas.",
+                            "Berikan tantangan akademis yang menarik untuk meningkatkan motivasinya di kelas.",
+                            "Libatkan orang tua dalam memantau jadwal belajar di rumah."
+                        ]
+                    }
                 },
                 "Muhammad farhat": {
-                    title: "Penanganan Masalah untuk Muhammad farhat",
-                    description: "Jika ada masalah terkait Muhammad farhat, pertimbangkan langkah-langkah berikut:",
-                    steps: [
-                        "Lakukan pertemuan tripartit dengan siswa, orang tua, dan guru.",
-                        "Identifikasi penyebab masalah dan tawarkan solusi yang konstruktif.",
-                        "Berikan dukungan moral dan pastikan siswa merasa didukung."
-                    ]
+                    profile: "Siswa dengan potensi akademis tinggi namun kurang percaya diri untuk menonjol.",
+                    penanganan: {
+                        title: "Penanganan Masalah: Kepercayaan Diri",
+                        description: "Farhat perlu didorong untuk lebih berani menunjukkan potensinya.",
+                        steps: [
+                            "Berikan apresiasi publik untuk setiap pencapaiannya.",
+                            "Tunjuk ia sebagai tutor sebaya untuk teman yang kesulitan.",
+                            "Dorong untuk berpartisipasi dalam kegiatan ekstrakurikuler yang sesuai minatnya."
+                        ]
+                    }
+                },
+                "Risman": {
+                    profile: "Siswa yang sering absen tanpa keterangan. Perlu perhatian khusus terhadap kehadiran.",
+                    penanganan: {
+                        title: "Penanganan Masalah: Kedisiplinan Kehadiran",
+                        description: "Masalah kehadiran Risman harus segera ditangani agar tidak mengganggu proses belajarnya.",
+                        steps: [
+                            "Hubungi orang tua atau wali untuk mencari tahu penyebab absen.",
+                            "Berikan konseling untuk memahami apa yang membuatnya enggan ke sekolah.",
+                            "Buat perjanjian atau kesepakatan tertulis bersama orang tua untuk memantau kehadirannya."
+                        ]
+                    }
+                },
+                 "default": {
+                    profile: "Siswa dengan rekam jejak yang baik. Tidak ada masalah khusus yang tercatat. Lanjutkan pembinaan umum.",
+                    penanganan: {
+                        title: "Penanganan Masalah: Pembinaan Umum",
+                        description: "Siswa ini berada di jalur yang benar. Berikut adalah tugas pembinaan umum:",
+                        steps: [
+                            "Terus berikan dukungan dan motivasi.",
+                            "Pantau terus perkembangan akademis dan sosialnya.",
+                            "Pastikan tidak ada masalah yang tersembunyi dengan komunikasi terbuka."
+                        ]
+                    }
                 }
             };
 
             // Render daftar siswa ke dalam HTML
             students.forEach((student) => {
                 const listItem = document.createElement('li');
-                listItem.textContent = student;
                 listItem.className = "student-item p-4 rounded-md shadow-sm border border-gray-100 text-gray-700 cursor-pointer transition-all duration-300 ease-in-out flex items-center justify-between";
                 listItem.innerHTML = `<span class="flex-grow">${student}</span> <i class="fas fa-info-circle text-gray-400 text-lg"></i>`;
                 studentListElement.appendChild(listItem);
 
                 listItem.addEventListener('click', () => {
                     const studentName = listItem.querySelector('span').textContent;
-                    const data = penangananMasalah[studentName] || penangananMasalah.umum;
+                    const data = dataSiswa[studentName] || dataSiswa.default;
                     
-                    modalTitle.textContent = data.title;
-                    modalContent.innerHTML = `<p class="mb-4">${data.description}</p>` +
-                                             `<ol class="list-decimal list-inside space-y-2">` +
-                                             data.steps.map(step => `<li>${step}</li>`).join('') +
-                                             `</ol>`;
+                    modalTitle.textContent = `Informasi Siswa: ${studentName}`;
+                    profileSiswa.textContent = data.profile;
+                    tugasWaliContent.innerHTML = tugasGuruWali;
+                    
+                    if (data.penanganan) {
+                        penangananKhususContent.innerHTML = `
+                            <p class="mb-4 text-gray-700">${data.penanganan.description}</p>
+                            <ol class="list-decimal list-inside space-y-2">
+                                ${data.penanganan.steps.map(step => `<li>${step}</li>`).join('')}
+                            </ol>
+                        `;
+                        penangananKhususSection.classList.remove('hidden');
+                    } else {
+                        penangananKhususSection.classList.add('hidden');
+                    }
+                    
                     modal.classList.remove('hidden');
                     modal.classList.add('show');
                 });
@@ -225,4 +292,3 @@
     </script>
 </body>
 </html>
-
