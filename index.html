@@ -171,8 +171,8 @@
             </ul>
         </div>
         
-        <!-- Tombol Unduh PDF -->
-        <div class="mt-8 text-center">
+        <!-- Tombol Ekspor PDF -->
+        <div class="mt-8 text-center" id="pdf-export-container">
             <button id="download-pdf-btn" class="px-6 py-3 bg-indigo-500 text-white font-bold rounded-lg shadow-md hover:bg-indigo-600 transition-colors">
                 <i class="fas fa-file-pdf mr-2"></i> Ekspor PDF
             </button>
@@ -224,6 +224,7 @@
             const filterPresentButton = document.getElementById('filter-present');
             const filterAbsentButton = document.getElementById('filter-absent');
             const downloadPdfBtn = document.getElementById('download-pdf-btn');
+            const pdfExportContainer = document.getElementById('pdf-export-container');
             const modal = document.getElementById('modal-masalah');
             const modalTitle = document.getElementById('modal-title');
             const profileSiswa = document.getElementById('profile-siswa');
@@ -330,12 +331,17 @@
                 return date.toLocaleDateString('id-ID', options);
             }
 
-            // Fungsi untuk merender daftar siswa berdasarkan filter
             let currentFilter = 'all';
 
             function renderStudents(date) {
                 studentListElement.innerHTML = '';
                 tanggalTampil.textContent = getFormattedDate(date);
+                
+                if (currentFilter === 'present') {
+                    pdfExportContainer.classList.remove('hidden');
+                } else {
+                    pdfExportContainer.classList.add('hidden');
+                }
                 
                 let studentsForDate = allStudents.map(name => {
                     const record = attendanceRecords.find(rec => rec.date === date && rec.name === name);
@@ -439,22 +445,21 @@
                 try {
                     const { jsPDF } = window.jspdf;
                     const pdf = new jsPDF('p', 'mm', 'a4');
-                    // Data untuk tabel
+                    
                     const studentsForDate = allStudents.map(name => {
                         const record = attendanceRecords.find(rec => rec.date === selectedDate && rec.name === name);
                         return { name: name, status: record ? record.status : 'unknown' };
                     });
 
                     const filteredStudents = studentsForDate.filter(student => {
-                        if (currentFilter === 'all') return true;
-                        return student.status === currentFilter;
+                        return student.status === 'present';
                     });
                     
                     const tableHeaders = [["No.", "Nama Siswa", "Status Absensi", "Tanggal"]];
                     const tableData = filteredStudents.map((student, index) => [
                         allStudents.indexOf(student.name) + 1, 
                         student.name, 
-                        student.status === 'present' ? 'Hadir' : student.status === 'absent' ? 'Tidak Hadir' : 'Belum Diabsen',
+                        'Hadir',
                         getFormattedDate(selectedDate)
                     ]);
 
@@ -490,7 +495,7 @@
                 }
             });
 
-            // Event Listeners untuk filter
+            // Event Listeners for filters
             filterAllButton.addEventListener('click', () => { currentFilter = 'all'; renderStudents(tanggalInput.value); });
             filterPresentButton.addEventListener('click', () => { currentFilter = 'present'; renderStudents(tanggalInput.value); });
             filterAbsentButton.addEventListener('click', () => { currentFilter = 'absent'; renderStudents(tanggalInput.value); });
